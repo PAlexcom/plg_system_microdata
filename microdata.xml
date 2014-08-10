@@ -19,4 +19,15 @@
         <language tag="en-GB">language/en-GB/en-GB.plg_system_microdata.ini</language>
         <language tag="en-GB">language/en-GB/en-GB.plg_system_microdata.sys.ini</language>
     </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="setting" label="PLG_SYSTEM_MICRODATA_FIELDSET_SETTING_LABEL">
+                <field name="suffix" type="text"
+                       default="sd"
+                       label="PLG_SYSTEM_MICRODATA_FIELD_SUFFIX_LABEL"
+                       description="PLG_SYSTEM_MICRODATA_FIELD_SUFFIX_DESCRIPTION"
+                        />
+            </fieldset>
+        </fields>
+    </config>
 </extension>

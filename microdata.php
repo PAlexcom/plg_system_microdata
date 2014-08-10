@@ -47,11 +47,14 @@ class PlgSystemMicrodata extends JPlugin
 		// Tell the auto-loader to look for classes starting with "Lib" in a specific folder.
 		JLoader::discover('Lib', JPATH_PLUGINS . '/system/microdata/lib');
 
+		// Retrieve the params
+		$suffix = explode(',', $this->params->get('suffix', 'sd'));
+
 		// Get the body HTML
 		$output = $app->getBody();
 
 		// Make an instance of the parser
-		$parser = new LibParserPlugin();
+		$parser = new LibParserPlugin($suffix);
 
 		// Set the body HTML
 		$app->setBody($parser->parse($output));
