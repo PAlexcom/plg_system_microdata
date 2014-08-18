@@ -36,7 +36,7 @@ class LibParserPlugin
 			$this->suffix($suffix);
 		}
 
-		$this->handler = new JMicrodata();
+		$this->handler = new JMicrodata;
 	}
 
 	/**
