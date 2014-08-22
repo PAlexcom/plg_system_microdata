@@ -1,5 +1,5 @@
 Microdata
-==============
+=========
 A Joomla ```3.2+``` system plugin that uses the [JMicrodata](https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata "JMicrodata") library.  
 Created during the Google Summer of Code 2014.
 
@@ -49,9 +49,9 @@ Let's suppose that somewhere in your code you need to add Microdata semantics to
         How to Tie a Reef Knot
     </span>
     <!-- Author -->
-    <span data-sd="author">
+    <span>
         Written by
-        <span data-sd="Person">
+        <span data-sd="author.Person">
             <span data-sd="name">John Doe</span>
         </span>
     </span>
@@ -71,9 +71,9 @@ The ```Microdata``` output will be:
         How to Tie a Reef Knot
     </span>
     <!-- Author -->
-    <span itemprop='author'>
+    <span>
         Written by
-        <span itemscope itemtype='https://schema.org/Person'>
+        <span itemprop='author' itemscope itemtype='https://schema.org/Person'>
             <span itemprop='name'>John Doe</span>
         </span>
     </span>
@@ -94,9 +94,9 @@ The ```Microdata``` output will be:
         How to Tie a Reef Knot
     </span>
     <!-- Author -->
-    <span itemprop='author'>
+    <span>
         Written by
-        <span itemscope itemtype='https://schema.org/Person'>
+        <span itemprop='author' itemscope itemtype='https://schema.org/Person'>
             <span itemprop='name'>John Doe</span>
         </span>
     </span>
@@ -108,10 +108,6 @@ The ```Microdata``` output will be:
     </span>
 <div>
 ```
-
-Todos
------
-* Add nested displays support.
 
 License
 -------
