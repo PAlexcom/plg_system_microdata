@@ -3,9 +3,9 @@ Microdata
 A Joomla ```3.2+``` system plugin that uses the [JMicrodata](https://github.com/joomla/joomla-cms/tree/master/libraries/joomla/microdata "JMicrodata") library.  
 Created during the Google Summer of Code 2014.
 
-If you want to keep your views separated from the logic, ```plg_system_microdata``` is system plugin for parsing the HTML markup and convert the ```data-*``` HTML5 attributes in Microdata semantics.  
+If you want to keep your views separated from the logic, ```plg_system_microdata``` is system plugin for parsing the HTML markup and converting the ```data-*``` HTML5 attributes into the correctly formatted Microdata semantics.  
 
-The ```data-*``` attributes are new in HTML5, they gives us the ability to embed custom data attributes on all HTML elements. So if you disable the library output, the HTML will still be validated. The default suffix the library will search for is ```data-sd```, but you can register more than one custom suffix.  
+The ```data-*``` attributes are new in HTML5, they give us the ability to embed custom data attributes on all HTML elements. So if you disable the library output, the HTML will still be validated. The default suffix that the library will search for is ```data-sd```, where sd stands for structured data, but you can register more than one custom suffix.  
 
 Installation
 ============
@@ -13,34 +13,131 @@ Installation
 
 Usage
 =====
-Since the system plugin runs right before the final content is send to the client, you can use the plugin syntax everywhere, including native and third-party extensions that allows html editing.
-### Building blocks Syntax
+Since the system plugin runs immediately before the final content is sent to the client, you can use the plugin syntax everywhere, including native and third-party extensions that allow HTML editing.
+
+### Markup Syntax
 ##### setType
 ![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-setType.png)  
-The _type_ must have the first character Uppercase. If the type is valid, the global scope is updated to the new one. Finally the params will be replaced with ```itemscope itemtype='https://schema.org/Type'```.  
+The _type_ defines which schema is being used for the following markup.  The Type must always have the first character Uppercase to be correctly interpreted. If the type is a valid schema, the global scope for the page from this point onwards is updated to this schema. The plugin will replace the data tag with ```itemscope itemtype='https://schema.org/Type'```.  
   
-##### global fallback proeprty
+###### Example:
+```html
+<div data-sd="Article">
+    <p>This is my article</p>
+</div>
+```
+
+This will be output:
+```html
+<div itemscope itemtype="http://schema.org/Article">
+    <p>This is my article</p>
+</div>
+```
+
+##### Specifying generic item properties
 ![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-global.png)  
-The _property_ must have the first character lowercase. If the property is part of the current global scope, the params will be replaced with ```itemprop='property'```.  
-
-##### specialized fallback proeprty
-![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-specialized.png)  
-A combination between both _Type_ and _property_, separated by a dot. In short, if the current global scope is equal to Type and the property is part of the Type, the params will be replaced ```itemprop='property'```.  
+Once a schema has been declared, the next step is to declare individual properties – explaining the content and giving it semantic meaning.
   
-### Syntax
-![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0.png)  
-A combination between the previous 3 building blocks. The order of the building blocks isn't significant and a white space is used as a separator.  
-##### The Algorithm:
-1. First the parser checks for __setTypes__. If one or more matches are found then the current global scope will be update with the first match. At this point if there are no specialized or global fallback properties the algorithm will finish and replace the params with the current scope. Otherwise continue to point 2.  
-2. The parser checks for __specialized fallback properties__. If one or more valid matches are found, then the algorithm will finish and replace the params with the first match property. Otherwise go to point 3
-3. The parser checks for __global fallback properties__. If one or more valid matches are found, then replace the params with the first match property and finish the algorithm.
+The _property_ must always have the first character as lowercase to be correctly interpreted. If the property is found to be part of the current schema, the plugin will replace the data tag with ```itemprop='property'```.  If the property is not found to be a valid property of the active schema, it will be ignored and the next available property will be parsed.
 
-Publisher
-=========
+###### Example:
+```html
+<div data-sd="Article">
+    <p data-sd="articleBody">This is my article</p>
+</div>
+```
+
+This will be output:
+```html
+<div itemscope itemtype="http://schema.org/Article">
+    <p itemprop="articleBody">This is my article</p>
+</div>
+```
+
+##### Specifying schema—dependant item properties
+![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0-specialized.png)  
+Sometimes you may want to explicitly state a property which should only be used when a specific schema is active – for example, if the property has a specific property in one schema, which is called something different in another schema.
+
+It is possible to achieve this by using a schema–dependant property.  This works by using a combination between both _Type_ and _property_, separated by a full stop. In short, if the current global scope is equal to Type and the property is part of that Type, the plugin will replace the data tag with ```itemprop='property'```.
+
+###### Example:
+```html
+<div data-sd="Article">
+    <p data-sd="articleBody">This is my article</p>
+    <p data-sd="Article.wordcount">4</p>
+</div>
+```
+
+This will be output:
+```html
+<div itemscope itemtype="http://schema.org/Article">
+    <p itemprop="articleBody">This is my article</p>
+    <p itemprop="wordcount">4</p>
+</div>
+```
+
+### Using multiple properties
+![ParserPlugin Syntax](https://palexcom.github.io/PHPStructuredData/images/parser-plugin-syntax-v1.3.0.png)  
+It is possible, using a combination of these, to specify multiple properties including some which are specific for a schema and others which are generic. The order of the building blocks isn't significant and a white space is used as a separator.
+
+###### Example:
+```html
+<div data-sd="Article">
+    <p data-sd="articleBody">This is my article</p>
+    <p data-sd="Article.wordcount">4</p>
+    <p data-sd="Recipe.recipeCategory Article.articleSection description">Amazing dessert recipes</p>
+</div>
+```
+
+This will be output:
+```html
+<div itemscope itemtype="http://schema.org/Article">
+    <p itemprop="articleBody">This is my article</p>
+    <p itemprop="wordcount">4</p>
+    <p itemprop="articleSection">Amazing dessert recipes</p>
+</div>
+```
+
+##### Nesting schemas
+Sometimes it is necessary to nest schemas – for example if you want to describe a person when you have the Article schema open. This is possible using nested schemas. To use this, simply append the schema preceeded by a full stop, __after__ the property.  Once you have finished using the nested schema, close the containing tag, and re-set the original schema.
+
+###### Example:
+```html
+<div data-sd="Article">
+    <p data-sd="articleBody">This is my article</p>
+    <p data-sd="Article.wordcount">4</p>
+    <div data-sd="author.Person">
+        <p data-sd="name">John Doe</p>
+    </div>
+    <p data-sd="Article keywords">Cake</p>
+</div>
+```
+
+This will be output:
+```html
+<div itemscope itemtype="http://schema.org/Article">
+    <p itemprop="articleBody">This is my article</p>
+    <p itemprop="wordcount">4</p>
+    <div itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <p itemprop="name">John Doe</p>
+    </div>
+    <p itemprop="keywords">Cake</p>
+</div>
+```
+
+##### The Algorithm:
+1. First the parser checks for __setTypes__. If one or more matches are found then the current global scope will be updated with the first match. At this point if there are no specific or generic properties the algorithm will finish and replace the data tag with the specified scope. Otherwise continue to point 2.
+2. The parser checks for __specific item properties__. If one or more valid matches are found, then the algorithm will finish and replace the data tag with the first match property. Otherwise go to point 3
+3. The parser checks for __generic properties__. If one or more valid matches are found, then the algorithm will replace the data tag with the first property that is matched, and complete the algorithm.
+
+Semantically marking up 'on the fly' within HTML editors
+========================================================
+To apply markup within articles simply use the data tag and the method explained above.  
+See below for an example.
 ![plg_system_structureddata content editor usage](https://palexcom.github.io/plg_system_structureddata/images/plg_system_structureddata-editor.png)
 
-Developer
-=========
+Incorporating into your extensions and templates
+================================================
 Let's suppose that somewhere in your code you need to add Microdata semantics to the following HTML which is part of an article (_e.g._ ```$scope='Article';```).
 ```html
 <div data-sd="<?php echo $scope;?>">
@@ -63,7 +160,7 @@ Let's suppose that somewhere in your code you need to add Microdata semantics to
     </span>
 <div>
 ```
-The ```Microdata``` output will be:
+The output will be:
 ```html
 <div itemscope itemtype='https://schema.org/Article'>
     <!-- Title -->
@@ -85,8 +182,9 @@ The ```Microdata``` output will be:
     </span>
 <div>
 ```
+
 Instead, if you decide to change the current Type (_e.g._ ```$scope="Review";```).  
-The ```Microdata``` output will be:
+The output will be:
 ```html
 <div itemscope itemtype='https://schema.org/Review'>
     <!-- Title -->
