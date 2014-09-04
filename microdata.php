@@ -4,7 +4,7 @@
  * @subpackage System.Microdata
  *
  * @copyright  Copyright (C) 2014 P.Alex (Alexandru Pruteanu)
- * @license    Licensed under the MIT License; see LICENSE
+ * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
 defined('JPATH_BASE') or die;

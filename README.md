@@ -111,4 +111,4 @@ The ```Microdata``` output will be:
 
 License
 -------
-plg_system_structureddata is licensed under the MIT License – see the LICENSE file for details.
+plg_system_microdata is licensed under the GNU GPL v2 License – see the LICENSE file for details.
