@@ -3,7 +3,7 @@
  * @package    Joomla.Plugin
  * @subpackage System.Microdata
  *
- * @copyright  Copyright (C) 2014 P.Alex (Alexandru Pruteanu)
+ * @copyright  Copyright (C) 2014 Alex Prut (Alexandru Pruteanu)
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
