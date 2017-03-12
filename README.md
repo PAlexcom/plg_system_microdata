@@ -133,7 +133,7 @@ This will be output:
 Semantically marking up 'on the fly' within HTML editors
 ========================================================
 To apply markup within articles simply use the data tag and the method explained above.  
-See below for an example.
+See below for an example.  
 ![plg_system_structureddata content editor usage](https://alexprut.github.io/plg_system_structureddata/images/plg_system_structureddata-editor.png)  
 
 Incorporating into your extensions and templates
